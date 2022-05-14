@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/BulkInsertOracle/Inputs/ARQ_BASE_RDC28_025_202112.TXT
+/BulkInsertOracle/Inputs/ARQ_AUX_RDC28_202112.txt
