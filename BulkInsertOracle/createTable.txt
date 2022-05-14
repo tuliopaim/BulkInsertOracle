@@ -1,0 +1,136 @@
+-- Create table
+create table RDC
+(
+  inicio_apuracao             DATE,
+  fim_apuracao                DATE,
+  seq_linha_arquivo           NUMBER(12) not null,
+  competencia                 NUMBER(6) not null,
+  ud_base                     NUMBER(3) not null,
+  ud_executora                NUMBER(3),
+  ud_origem                   NUMBER(3),
+  cod_beneficiario            VARCHAR2(255),
+  dt_nascimento               DATE,
+  dt_inclusao                 DATE,
+  dt_exclusao                 DATE,
+  contratacao                 NUMBER(1),
+  segmentacao                 NUMBER(2),
+  abrangencia                 NUMBER(4),
+  acomodacao                  NUMBER(1),
+  nome_plano                  VARCHAR2(255),
+  registro_ans                VARCHAR2(255),
+  copart_amb                  NUMBER(2),
+  copart_inter                NUMBER(6),
+  cod_proced                  NUMBER(10),
+  guia                        VARCHAR2(255),
+  desc_proced                 VARCHAR2(255),
+  qtd_proced                  NUMBER(10),
+  custo                       NUMBER(20,2),
+  recup_custo                 NUMBER(20,2),
+  dt_ocorrencia               DATE,
+  dt_internacao               DATE,
+  dt_alta                     DATE,
+  cod_cid                     VARCHAR2(255),
+  desc_cid                    VARCHAR2(255),
+  tipo_internacao             NUMBER(1),
+  prestador                   VARCHAR2(255),
+  nome_beneficiario           VARCHAR2(255),
+  sexo                        VARCHAR2(1),
+  municipio_residencia        VARCHAR2(255),
+  uf_residencia               VARCHAR2(2),
+  administradora_benef        VARCHAR2(255),
+  contr_comercializacao       VARCHAR2(255),
+  cod_contrato                VARCHAR2(255),
+  dt_inclusao_contrato        DATE,
+  dt_exclusao_contrato        DATE,
+  cnpj                        VARCHAR2(14),
+  nome_empresa                VARCHAR2(255),
+  mes_reajuste                NUMBER(2),
+  exclusivo_ex_empreg         VARCHAR2(1),
+  tipo_reajuste               NUMBER(1),
+  regulamentado               VARCHAR2(5),
+  modalidade                  VARCHAR2(5),
+  receita                     NUMBER(20,2),
+  taxa_adm_serv               VARCHAR2(255),
+  cpf                         VARCHAR2(11),
+  vinculo                     NUMBER(2),
+  prestador_solic             VARCHAR2(15),
+  especialidade_solic         VARCHAR2(255),
+  prestador_exec_nome         VARCHAR2(255),
+  especialidade_exec          VARCHAR2(255),
+  vl_pagto_prestador          NUMBER(20,2),
+  guia_principal              VARCHAR2(50),
+  versao_tabela               NUMBER(1),
+  participacao_exec           NUMBER(2),
+  indice_aplicado             VARCHAR2(50),
+  ultima_mensalidade          NUMBER(20,2),
+  glosa                       NUMBER(20,2),
+  pagto_complementar          NUMBER(20,2),
+  rede                        VARCHAR2(1),
+  fatura                      VARCHAR2(10),
+  vl_fat_ptu_a500             NUMBER(20,2),
+  tipo_item                   NUMBER(1),
+  dt_execucao                 DATE,
+  tipo_prestador              NUMBER(1),
+  demostrativo_pagto          VARCHAR2(15),
+  local_atend                 VARCHAR2(255),
+  compartilhamento            VARCHAR2(1),
+  tipo_compartilhamento       VARCHAR2(4),
+  remido                      VARCHAR2(1),
+  sequencia_item              VARCHAR2(30),
+  carater_atend               VARCHAR2(1),
+  tipo_direcionamento         NUMBER(1),
+  fator_internacao_apto_pagto NUMBER(3),
+  fator_via_de_acesso_pagto   NUMBER(4),
+  fator_emergencia_pagto      NUMBER(3),
+  tx_intercambio_custo        NUMBER(12,2),
+  motivo_da_alta              NUMBER(2),
+  flg_ajius                   VARCHAR2(1),
+  local_atend_nome            VARCHAR2(255),
+  local_atend_cidade          VARCHAR2(255),
+  prestador_solic_nome        VARCHAR2(255),
+  prestador_exec_cidade       VARCHAR2(255),
+  cobertura_adicional         VARCHAR2(255),
+  grupo_economico             VARCHAR2(255),
+  tipo_coparticipacao         VARCHAR2(255),
+  cod_planta                  VARCHAR2(255),
+  exposto                     VARCHAR2(255)
+)
+tablespace PENTAHO_DADOS
+  pctfree 10
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate indexes 
+create index RDC_A on RDC (UD_BASE, UD_ORIGEM, COMPETENCIA, MODALIDADE)
+  tablespace PENTAHO_DADOS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table RDC
+  add primary key (SEQ_LINHA_ARQUIVO, COMPETENCIA, UD_BASE)
+  using index 
+  tablespace PENTAHO_DADOS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
