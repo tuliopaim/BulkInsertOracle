@@ -10,7 +10,7 @@ const string cnnStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=loc
 var basePath = @"C:\src\BulkInsertOracle\BulkInsertOracle\Inputs";
 var arqBaseFileName = "ARQ_BASE_RDC28_025_202112.txt";
 var arqBaseFilePath = Path.Combine(basePath!, arqBaseFileName);
-var batchSize = 10;
+var batchSize = 5;
 
 try
 {
@@ -64,7 +64,7 @@ async Task ReadAndInsert()
 
             bufferIndex = 0;
         }
-        if (lineNumber % 100 == 0) Console.WriteLine(lineNumber + " inseridos!");
+        if (lineNumber % 1000 == 0) Console.WriteLine(lineNumber + " inseridos!" + TimeSpan.FromMilliseconds(stopWatch.ElapsedMilliseconds).ToString());
     }
 
     stopWatch.Stop();

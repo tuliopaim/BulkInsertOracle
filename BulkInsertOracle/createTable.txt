@@ -95,7 +95,7 @@ create table RDC
   cod_planta                  VARCHAR2(255),
   exposto                     VARCHAR2(255)
 )
-tablespace PENTAHO_DADOS
+tablespace USERS
   pctfree 10
   initrans 1
   maxtrans 255
@@ -108,7 +108,7 @@ tablespace PENTAHO_DADOS
   );
 -- Create/Recreate indexes 
 create index RDC_A on RDC (UD_BASE, UD_ORIGEM, COMPETENCIA, MODALIDADE)
-  tablespace PENTAHO_DADOS
+  tablespace USERS
   pctfree 10
   initrans 2
   maxtrans 255
@@ -118,12 +118,12 @@ create index RDC_A on RDC (UD_BASE, UD_ORIGEM, COMPETENCIA, MODALIDADE)
     next 1M
     minextents 1
     maxextents unlimited
-  );
+  );lear
 -- Create/Recreate primary, unique and foreign key constraints 
 alter table RDC
   add primary key (SEQ_LINHA_ARQUIVO, COMPETENCIA, UD_BASE)
   using index 
-  tablespace PENTAHO_DADOS
+  tablespace USERS
   pctfree 10
   initrans 2
   maxtrans 255
