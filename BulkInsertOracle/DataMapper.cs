@@ -310,9 +310,4 @@ public static class DataMapper
             null;
     }
 
-    public static object MapToTable(string headerName)
-    {
-        return
-    }
-
 }
