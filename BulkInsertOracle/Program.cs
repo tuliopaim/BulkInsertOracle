@@ -5,12 +5,12 @@ using System.Text;
 
 Console.WriteLine("Starting...");
 
-const string cnnStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=TESTE;Password=senhaS3creta;";
+const string cnnStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=SYSTEM;Password=senhaS3creta;";
 
 var basePath = @"C:\src\BulkInsertOracle\BulkInsertOracle\Inputs";
 var arqBaseFileName = "ARQ_BASE_RDC28_025_202112.txt";
 var arqBaseFilePath = Path.Combine(basePath!, arqBaseFileName);
-var batchSize = 5;
+var batchSize = 10;
 
 try
 {
@@ -78,7 +78,7 @@ static string GenerateQuerynInsertInto(int batchSize)
 {
     var builder = new StringBuilder();
 
-    builder.Append("INTO \"RDC\" (");
+    builder.Append("INTO \"C##teste\".RDC (");
     var totalColunas = ColumnName.Todos().Count();
     var columnCount = 0;
     foreach (var columnName in ColumnName.Todos())
