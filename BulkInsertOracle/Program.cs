@@ -21,13 +21,336 @@ try
     Console.WriteLine($"{models.Count} linhas, inserindo... {ObterTempo(stopWatch)}");
 
     stopWatch.Start();
-    await InsertLines(models, stopWatch);
+    //await InsertLines(models, stopWatch);
+    InserirBulkCopy(models);
 
+    Console.WriteLine(ObterTempo(stopWatch));
     Console.ReadLine();
 }
 catch (Exception ex)
 {
 
+}
+
+void InserirBulkCopy(List<RdcModel> models)
+{
+    using var copy = new OracleBulkCopy(cnnStr);
+    using var table = ToDataTable(models);
+
+    copy.DestinationTableName = "\"RDC\"";
+    copy.BatchSize = table.Rows.Count;
+
+    copy.ColumnMappings.Add(ColumnName.SEQ_LINHA_ARQUIVO, ColumnName.SEQ_LINHA_ARQUIVO);
+    copy.ColumnMappings.Add(ColumnName.COMPETENCIA, ColumnName.COMPETENCIA);
+    copy.ColumnMappings.Add(ColumnName.UD_ORIGEM, ColumnName.UD_ORIGEM);
+    copy.ColumnMappings.Add(ColumnName.INICIO_APURACAO, ColumnName.INICIO_APURACAO);
+    copy.ColumnMappings.Add(ColumnName.FIM_APURACAO, ColumnName.FIM_APURACAO);
+    copy.ColumnMappings.Add(ColumnName.COD_BENEFICIARIO, ColumnName.COD_BENEFICIARIO);
+    copy.ColumnMappings.Add(ColumnName.DT_NASCIMENTO, ColumnName.DT_NASCIMENTO);
+    copy.ColumnMappings.Add(ColumnName.DT_INCLUSAO, ColumnName.DT_INCLUSAO);
+    copy.ColumnMappings.Add(ColumnName.DT_EXCLUSAO, ColumnName.DT_EXCLUSAO);
+    copy.ColumnMappings.Add(ColumnName.CONTRATACAO, ColumnName.CONTRATACAO);
+    copy.ColumnMappings.Add(ColumnName.SEGMENTACAO, ColumnName.SEGMENTACAO);
+    copy.ColumnMappings.Add(ColumnName.ABRANGENCIA, ColumnName.ABRANGENCIA);
+    copy.ColumnMappings.Add(ColumnName.ACOMODACAO, ColumnName.ACOMODACAO);
+    copy.ColumnMappings.Add(ColumnName.NOME_PLANO, ColumnName.NOME_PLANO);
+    copy.ColumnMappings.Add(ColumnName.REGISTRO_ANS, ColumnName.REGISTRO_ANS);
+    copy.ColumnMappings.Add(ColumnName.COPART_AMB, ColumnName.COPART_AMB);
+    copy.ColumnMappings.Add(ColumnName.COPART_INTER, ColumnName.COPART_INTER);
+    copy.ColumnMappings.Add(ColumnName.COD_PROCED, ColumnName.COD_PROCED);
+    copy.ColumnMappings.Add(ColumnName.GUIA, ColumnName.GUIA);
+    copy.ColumnMappings.Add(ColumnName.DESC_PROCED, ColumnName.DESC_PROCED);
+    copy.ColumnMappings.Add(ColumnName.QTD_PROCED, ColumnName.QTD_PROCED);
+    copy.ColumnMappings.Add(ColumnName.CUSTO, ColumnName.CUSTO);
+    copy.ColumnMappings.Add(ColumnName.RECUP_CUSTO, ColumnName.RECUP_CUSTO);
+    copy.ColumnMappings.Add(ColumnName.DT_OCORRENCIA, ColumnName.DT_OCORRENCIA);
+    copy.ColumnMappings.Add(ColumnName.DT_INTERNACAO, ColumnName.DT_INTERNACAO);
+    copy.ColumnMappings.Add(ColumnName.DT_ALTA, ColumnName.DT_ALTA);
+    copy.ColumnMappings.Add(ColumnName.COD_CID, ColumnName.COD_CID);
+    copy.ColumnMappings.Add(ColumnName.DESC_CID, ColumnName.DESC_CID);
+    copy.ColumnMappings.Add(ColumnName.TIPO_INTERNACAO, ColumnName.TIPO_INTERNACAO);
+    copy.ColumnMappings.Add(ColumnName.PRESTADOR, ColumnName.PRESTADOR);
+    copy.ColumnMappings.Add(ColumnName.NOME_BENEFICIARIO, ColumnName.NOME_BENEFICIARIO);
+    copy.ColumnMappings.Add(ColumnName.SEXO, ColumnName.SEXO);
+    copy.ColumnMappings.Add(ColumnName.MUNICIPIO_RESIDENCIA, ColumnName.MUNICIPIO_RESIDENCIA);
+    copy.ColumnMappings.Add(ColumnName.UF_RESIDENCIA, ColumnName.UF_RESIDENCIA);
+    copy.ColumnMappings.Add(ColumnName.UD_EXECUTORA, ColumnName.UD_EXECUTORA);
+    copy.ColumnMappings.Add(ColumnName.ADMINISTRADORA_BENEF, ColumnName.ADMINISTRADORA_BENEF);
+    copy.ColumnMappings.Add(ColumnName.CONTR_COMERCIALIZACAO, ColumnName.CONTR_COMERCIALIZACAO);
+    copy.ColumnMappings.Add(ColumnName.COD_CONTRATO, ColumnName.COD_CONTRATO);
+    copy.ColumnMappings.Add(ColumnName.DT_INCLUSAO_CONTRATO, ColumnName.DT_INCLUSAO_CONTRATO);
+    copy.ColumnMappings.Add(ColumnName.DT_EXCLUSAO_CONTRATO, ColumnName.DT_EXCLUSAO_CONTRATO);
+    copy.ColumnMappings.Add(ColumnName.CNPJ, ColumnName.CNPJ);
+    copy.ColumnMappings.Add(ColumnName.NOME_EMPRESA, ColumnName.NOME_EMPRESA);
+    copy.ColumnMappings.Add(ColumnName.MES_REAJUSTE, ColumnName.MES_REAJUSTE);
+    copy.ColumnMappings.Add(ColumnName.EXCLUSIVO_EX_EMPREG, ColumnName.EXCLUSIVO_EX_EMPREG);
+    copy.ColumnMappings.Add(ColumnName.TIPO_REAJUSTE, ColumnName.TIPO_REAJUSTE);
+    copy.ColumnMappings.Add(ColumnName.REGULAMENTADO, ColumnName.REGULAMENTADO);
+    copy.ColumnMappings.Add(ColumnName.MODALIDADE, ColumnName.MODALIDADE);
+    copy.ColumnMappings.Add(ColumnName.RECEITA, ColumnName.RECEITA);
+    copy.ColumnMappings.Add(ColumnName.TAXA_ADM_SERV, ColumnName.TAXA_ADM_SERV);
+    copy.ColumnMappings.Add(ColumnName.CPF, ColumnName.CPF);
+    copy.ColumnMappings.Add(ColumnName.VINCULO, ColumnName.VINCULO);
+    copy.ColumnMappings.Add(ColumnName.PRESTADOR_SOLIC, ColumnName.PRESTADOR_SOLIC);
+    copy.ColumnMappings.Add(ColumnName.ESPECIALIDADE_SOLIC, ColumnName.ESPECIALIDADE_SOLIC);
+    copy.ColumnMappings.Add(ColumnName.PRESTADOR_EXEC_NOME, ColumnName.PRESTADOR_EXEC_NOME);
+    copy.ColumnMappings.Add(ColumnName.ESPECIALIDADE_EXEC, ColumnName.ESPECIALIDADE_EXEC);
+    copy.ColumnMappings.Add(ColumnName.VL_PAGTO_PRESTADOR, ColumnName.VL_PAGTO_PRESTADOR);
+    copy.ColumnMappings.Add(ColumnName.GUIA_PRINCIPAL, ColumnName.GUIA_PRINCIPAL);
+    copy.ColumnMappings.Add(ColumnName.VERSAO_TABELA, ColumnName.VERSAO_TABELA);
+    copy.ColumnMappings.Add(ColumnName.PARTICIPACAO_EXEC, ColumnName.PARTICIPACAO_EXEC);
+    copy.ColumnMappings.Add(ColumnName.INDICE_APLICADO, ColumnName.INDICE_APLICADO);
+    copy.ColumnMappings.Add(ColumnName.ULTIMA_MENSALIDADE, ColumnName.ULTIMA_MENSALIDADE);
+    copy.ColumnMappings.Add(ColumnName.GLOSA, ColumnName.GLOSA);
+    copy.ColumnMappings.Add(ColumnName.PAGTO_COMPLEMENTAR, ColumnName.PAGTO_COMPLEMENTAR);
+    copy.ColumnMappings.Add(ColumnName.UD_BASE, ColumnName.UD_BASE);
+    copy.ColumnMappings.Add(ColumnName.REDE, ColumnName.REDE);
+    copy.ColumnMappings.Add(ColumnName.FATURA, ColumnName.FATURA);
+    copy.ColumnMappings.Add(ColumnName.VL_FAT_PTU_A500, ColumnName.VL_FAT_PTU_A500);
+    copy.ColumnMappings.Add(ColumnName.TIPO_ITEM, ColumnName.TIPO_ITEM);
+    copy.ColumnMappings.Add(ColumnName.DT_EXECUCAO, ColumnName.DT_EXECUCAO);
+    copy.ColumnMappings.Add(ColumnName.TIPO_PRESTADOR, ColumnName.TIPO_PRESTADOR);
+    copy.ColumnMappings.Add(ColumnName.DEMOSTRATIVO_PAGTO, ColumnName.DEMOSTRATIVO_PAGTO);
+    copy.ColumnMappings.Add(ColumnName.LOCAL_ATEND, ColumnName.LOCAL_ATEND);
+    copy.ColumnMappings.Add(ColumnName.COMPARTILHAMENTO, ColumnName.COMPARTILHAMENTO);
+    copy.ColumnMappings.Add(ColumnName.TIPO_COMPARTILHAMENTO, ColumnName.TIPO_COMPARTILHAMENTO);
+    copy.ColumnMappings.Add(ColumnName.REMIDO, ColumnName.REMIDO);
+    copy.ColumnMappings.Add(ColumnName.SEQUENCIA_ITEM, ColumnName.SEQUENCIA_ITEM);
+    copy.ColumnMappings.Add(ColumnName.CARATER_ATEND, ColumnName.CARATER_ATEND);
+    copy.ColumnMappings.Add(ColumnName.TIPO_DIRECIONAMENTO, ColumnName.TIPO_DIRECIONAMENTO);
+    copy.ColumnMappings.Add(ColumnName.FATOR_INTERNACAO_APTO_PAGTO, ColumnName.FATOR_INTERNACAO_APTO_PAGTO);
+    copy.ColumnMappings.Add(ColumnName.FATOR_VIA_DE_ACESSO_PAGTO, ColumnName.FATOR_VIA_DE_ACESSO_PAGTO);
+    copy.ColumnMappings.Add(ColumnName.FATOR_EMERGENCIA_PAGTO, ColumnName.FATOR_EMERGENCIA_PAGTO);
+    copy.ColumnMappings.Add(ColumnName.TX_INTERCAMBIO_CUSTO, ColumnName.TX_INTERCAMBIO_CUSTO);
+    copy.ColumnMappings.Add(ColumnName.MOTIVO_DA_ALTA, ColumnName.MOTIVO_DA_ALTA);
+    copy.ColumnMappings.Add(ColumnName.FLG_AJIUS, ColumnName.FLG_AJIUS);
+    copy.ColumnMappings.Add(ColumnName.LOCAL_ATEND_NOME, ColumnName.LOCAL_ATEND_NOME);
+    copy.ColumnMappings.Add(ColumnName.LOCAL_ATEND_CIDADE, ColumnName.LOCAL_ATEND_CIDADE);
+    copy.ColumnMappings.Add(ColumnName.PRESTADOR_SOLIC_NOME, ColumnName.PRESTADOR_SOLIC_NOME);
+    copy.ColumnMappings.Add(ColumnName.PRESTADOR_SOLIC, ColumnName.PRESTADOR_SOLIC);
+    copy.ColumnMappings.Add(ColumnName.COBERTURA_ADICIONAL, ColumnName.COBERTURA_ADICIONAL);
+    copy.ColumnMappings.Add(ColumnName.GRUPO_ECONOMICO, ColumnName.GRUPO_ECONOMICO);
+    copy.ColumnMappings.Add(ColumnName.TIPO_COPARTICIPACAO, ColumnName.TIPO_COPARTICIPACAO);
+    copy.ColumnMappings.Add(ColumnName.COD_PLANTA, ColumnName.COD_PLANTA);
+    copy.ColumnMappings.Add(ColumnName.EXPOSTO, ColumnName.EXPOSTO);
+
+    try
+    {
+        copy.WriteToServer(table);
+    }
+    catch (Exception ex)
+    {
+        
+    }
+}
+
+DataTable ToDataTable(List<RdcModel> models)
+{
+    var table = CreateTable<RdcModel>();
+
+    foreach (var model in models)
+    {
+        var row = table.NewRow();
+
+        row[ColumnName.SEQ_LINHA_ARQUIVO] = model.SEQ_LINHA_ARQUIVO;
+        row[ColumnName.COMPETENCIA] = model.COMPETENCIA;
+        row[ColumnName.UD_ORIGEM] = model.UNIMED_ORIGEM;
+        row[ColumnName.INICIO_APURACAO] = model.INICIO_APURACAO;
+        row[ColumnName.FIM_APURACAO] = model.FIM_APURACAO;
+        row[ColumnName.COD_BENEFICIARIO] = model.CODIGO_BENEFICIARIO;
+        row[ColumnName.DT_NASCIMENTO] = model.DATA_NASCIMENTO;
+        row[ColumnName.DT_INCLUSAO] = model.DATA_INCLUSAO;
+        row[ColumnName.DT_EXCLUSAO] = model.DATA_EXCLUSAO;
+        row[ColumnName.CONTRATACAO] = model.CONTRATACAO;
+        row[ColumnName.SEGMENTACAO] = model.SEGMENTACAO;
+        row[ColumnName.ABRANGENCIA] = model.ABRANGENCIA;
+        row[ColumnName.ACOMODACAO] = model.ACOMODACAO;
+        row[ColumnName.NOME_PLANO] = model.NOME_PLANO;
+        row[ColumnName.REGISTRO_ANS] = model.REGISTRO_ANS;
+        row[ColumnName.COPART_AMB] = model.CO_PARTICIPACAO_AMB;
+        row[ColumnName.COPART_INTER] = model.CO_PARTICIPACAO_INTER;
+        row[ColumnName.COD_PROCED] = model.COD_PROCEDIMENTO;
+        row[ColumnName.GUIA] = model.GUIA;
+        row[ColumnName.DESC_PROCED] = model.DESC_PROCEDIMENTO;
+        row[ColumnName.QTD_PROCED] = model.QTD_PROCED;
+        row[ColumnName.CUSTO] = model.CUSTO;
+        row[ColumnName.RECUP_CUSTO] = model.RECUP_CUSTO;
+        row[ColumnName.DT_OCORRENCIA] = model.DATA_OCORRENCIA;
+        row[ColumnName.DT_INTERNACAO] = model.DATA_INTERNACAO;
+        row[ColumnName.DT_ALTA] = model.DATA_ALTA;
+        row[ColumnName.COD_CID] = model.CODIGO_CID;
+        row[ColumnName.DESC_CID] = model.DESC_CID;
+        row[ColumnName.TIPO_INTERNACAO] = model.TIPO_INTERNACAO;
+        row[ColumnName.PRESTADOR] = model.PRESTADOR;
+        row[ColumnName.NOME_BENEFICIARIO] = model.NOME_BENEFICIARIO;
+        row[ColumnName.SEXO] = model.SEXO;
+        row[ColumnName.MUNICIPIO_RESIDENCIA] = model.MUNICIPIO_RESIDENCIA;
+        row[ColumnName.UF_RESIDENCIA] = model.UF_RESIDENCIA;
+        row[ColumnName.UD_EXECUTORA] = model.UD_EXECUTORA;
+        row[ColumnName.ADMINISTRADORA_BENEF] = model.ADMINISTRADORA_BENEF;
+        row[ColumnName.CONTR_COMERCIALIZACAO] = model.CONTR_COMERCIALIZACAO;
+        row[ColumnName.COD_CONTRATO] = model.CODIGO_CONTRATO;
+        row[ColumnName.DT_INCLUSAO_CONTRATO] = model.DATA_INCLUSAO_CONTRATO;
+        row[ColumnName.DT_EXCLUSAO_CONTRATO] = model.DATA_EXCLUSAO_CONTRATO;
+        row[ColumnName.CNPJ] = model.CNPJ;
+        row[ColumnName.NOME_EMPRESA] = model.NOME_EMPRESA;
+        row[ColumnName.MES_REAJUSTE] = model.MES_REAJUSTE;
+        row[ColumnName.EXCLUSIVO_EX_EMPREG] = model.EXCLUSIVO_EX_EMPREG;
+        row[ColumnName.TIPO_REAJUSTE] = model.TIPO_REAJUSTE;
+        row[ColumnName.REGULAMENTADO] = model.REGULAMENTADO;
+        row[ColumnName.MODALIDADE] = model.MODALIDADE;
+        row[ColumnName.RECEITA] = model.RECEITA;
+        row[ColumnName.TAXA_ADM_SERV] = model.TAXA_ADM_SERV;
+        row[ColumnName.CPF] = model.CPF;
+        row[ColumnName.VINCULO] = model.VINCULO;
+        row[ColumnName.PRESTADOR_SOLIC] = model.PRESTADOR_SOLICITANTE;
+        row[ColumnName.ESPECIALIDADE_SOLIC] = model.ESPECIALIDADE_SOLICITANTE;
+        row[ColumnName.PRESTADOR_EXEC_NOME] = model.PRESTADOR_EXECUTANTE_NOME;
+        row[ColumnName.ESPECIALIDADE_EXEC] = model.ESPECIALIDADE_EXECUTANTE;
+        row[ColumnName.VL_PAGTO_PRESTADOR] = model.VALOR_PAGAMENTO_PRESTADOR;
+        row[ColumnName.GUIA_PRINCIPAL] = model.GUIA_PRINCIPAL;
+        row[ColumnName.VERSAO_TABELA] = model.VERSAO_TABELA;
+        row[ColumnName.PARTICIPACAO_EXEC] = model.PARTICIPAÇÃO_EXECUTANTE;
+        row[ColumnName.INDICE_APLICADO] = model.INDICE_APLICADO;
+        row[ColumnName.ULTIMA_MENSALIDADE] = model.ULTIMA_MENSALIDADE;
+        row[ColumnName.GLOSA] = model.GLOSA;
+        row[ColumnName.PAGTO_COMPLEMENTAR] = model.PAGAMENTO_COMPLEMENTAR;
+        row[ColumnName.UD_BASE] = model.UD_BASE;
+        row[ColumnName.REDE] = model.REDE;
+        row[ColumnName.FATURA] = model.FATURA;
+        row[ColumnName.VL_FAT_PTU_A500] = model.VALOR_FAT_PTU_A500;
+        row[ColumnName.TIPO_ITEM] = model.TIPO_ITEM;
+        row[ColumnName.DT_EXECUCAO] = model.DATA_EXECUCAO;
+        row[ColumnName.TIPO_PRESTADOR] = model.TIPO_PRESTADOR;
+        row[ColumnName.DEMOSTRATIVO_PAGTO] = model.DEMOSTRATIVO_PAGTO;
+        row[ColumnName.LOCAL_ATEND] = model.LOCAL_ATENDIMENTO;
+        row[ColumnName.COMPARTILHAMENTO] = model.COMPARTILHAMENTO;
+        row[ColumnName.TIPO_COMPARTILHAMENTO] = model.TIPO_COMPARTILHAMENTO;
+        row[ColumnName.REMIDO] = model.REMIDO;
+        row[ColumnName.SEQUENCIA_ITEM] = model.SEQUENCIA_ITEM;
+        row[ColumnName.CARATER_ATEND] = model.CARATER_ATEND;
+        row[ColumnName.TIPO_DIRECIONAMENTO] = model.TIPO_DIRECIONAMENTO;
+        row[ColumnName.FATOR_INTERNACAO_APTO_PAGTO] = model.FATOR_INTERNACAO_APTO_PAGAMENTO;
+        row[ColumnName.FATOR_VIA_DE_ACESSO_PAGTO] = model.FATOR_VIA_DE_ACESSO_PAGAMENTO;
+        row[ColumnName.FATOR_EMERGENCIA_PAGTO] = model.FATOR_EMERGENCIA_PAGAMENTO;
+        row[ColumnName.TX_INTERCAMBIO_CUSTO] = model.TAXA_DE_INTERCAMBIO_CUSTO;
+        row[ColumnName.MOTIVO_DA_ALTA] = model.MOTIVO_DA_ALTA;
+        row[ColumnName.FLG_AJIUS] = model.FLG_AJIUS;
+        row[ColumnName.LOCAL_ATEND_NOME] = model.LOCAL_ATENDIMENTO_NOME;
+        row[ColumnName.LOCAL_ATEND_CIDADE] = model.LOCAL_ATENDIMENTO_CIDADE;
+        row[ColumnName.PRESTADOR_SOLIC_NOME] = model.PRESTADOR_SOLICITANTE_NOME;
+        row[ColumnName.PRESTADOR_SOLIC] = model.PRESTADOR_SOLICITANTE;
+        row[ColumnName.COBERTURA_ADICIONAL] = model.COBERTURA_ADICIONAL;
+        row[ColumnName.GRUPO_ECONOMICO] = model.GRUPO_ECONOMICO;
+        row[ColumnName.TIPO_COPARTICIPACAO] = model.TIPO_COPARTICIPACAO;
+        row[ColumnName.COD_PLANTA] = model.COD_PLANTA;
+        row[ColumnName.EXPOSTO] = model.EXPOSTO;
+
+        table.Rows.Add(row);
+    }
+
+    return table;
+}
+
+static DataTable CreateTable<T>()
+{
+    var table = new DataTable(typeof(RdcModel).Name);
+
+    table.Columns.Add(ColumnName.SEQ_LINHA_ARQUIVO, typeof(int));
+    table.Columns.Add(ColumnName.COMPETENCIA, typeof(string));
+    table.Columns.Add(ColumnName.UD_ORIGEM, typeof(int));
+    table.Columns.Add(ColumnName.INICIO_APURACAO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.FIM_APURACAO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.COD_BENEFICIARIO, typeof(string));
+    table.Columns.Add(ColumnName.DT_NASCIMENTO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.DT_INCLUSAO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.DT_EXCLUSAO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.CONTRATACAO, typeof(int?));
+    table.Columns.Add(ColumnName.SEGMENTACAO, typeof(int?));
+    table.Columns.Add(ColumnName.ABRANGENCIA, typeof(int?));
+    table.Columns.Add(ColumnName.ACOMODACAO, typeof(int?));
+    table.Columns.Add(ColumnName.NOME_PLANO, typeof(string));
+    table.Columns.Add(ColumnName.REGISTRO_ANS, typeof(string));
+    table.Columns.Add(ColumnName.COPART_AMB, typeof(int?));
+    table.Columns.Add(ColumnName.COPART_INTER, typeof(int?));
+    table.Columns.Add(ColumnName.COD_PROCED, typeof(long?));
+    table.Columns.Add(ColumnName.GUIA, typeof(string));
+    table.Columns.Add(ColumnName.DESC_PROCED, typeof(string));
+    table.Columns.Add(ColumnName.QTD_PROCED, typeof(long?));
+    table.Columns.Add(ColumnName.CUSTO, typeof(decimal?));
+    table.Columns.Add(ColumnName.RECUP_CUSTO, typeof(decimal?));
+    table.Columns.Add(ColumnName.DT_OCORRENCIA, typeof(DateTime?));
+    table.Columns.Add(ColumnName.DT_INTERNACAO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.DT_ALTA, typeof(DateTime?));
+    table.Columns.Add(ColumnName.COD_CID, typeof(string));
+    table.Columns.Add(ColumnName.DESC_CID, typeof(string));
+    table.Columns.Add(ColumnName.TIPO_INTERNACAO, typeof(int?));
+    table.Columns.Add(ColumnName.PRESTADOR, typeof(string));
+    table.Columns.Add(ColumnName.NOME_BENEFICIARIO, typeof(string));
+    table.Columns.Add(ColumnName.SEXO, typeof(string));
+    table.Columns.Add(ColumnName.MUNICIPIO_RESIDENCIA, typeof(string));
+    table.Columns.Add(ColumnName.UF_RESIDENCIA, typeof(string));
+    table.Columns.Add(ColumnName.UD_EXECUTORA, typeof(int?));
+    table.Columns.Add(ColumnName.ADMINISTRADORA_BENEF, typeof(string));
+    table.Columns.Add(ColumnName.CONTR_COMERCIALIZACAO, typeof(string));
+    table.Columns.Add(ColumnName.COD_CONTRATO, typeof(string));
+    table.Columns.Add(ColumnName.DT_INCLUSAO_CONTRATO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.DT_EXCLUSAO_CONTRATO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.CNPJ, typeof(string));
+    table.Columns.Add(ColumnName.NOME_EMPRESA, typeof(string));
+    table.Columns.Add(ColumnName.MES_REAJUSTE, typeof(int?));
+    table.Columns.Add(ColumnName.EXCLUSIVO_EX_EMPREG, typeof(string));
+    table.Columns.Add(ColumnName.TIPO_REAJUSTE, typeof(int?));
+    table.Columns.Add(ColumnName.REGULAMENTADO, typeof(string));
+    table.Columns.Add(ColumnName.MODALIDADE, typeof(string));
+    table.Columns.Add(ColumnName.RECEITA, typeof(decimal?));
+    table.Columns.Add(ColumnName.TAXA_ADM_SERV, typeof(string));
+    table.Columns.Add(ColumnName.CPF, typeof(string));
+    table.Columns.Add(ColumnName.VINCULO, typeof(int?));
+    table.Columns.Add(ColumnName.PRESTADOR_SOLIC, typeof(string));
+    table.Columns.Add(ColumnName.ESPECIALIDADE_SOLIC, typeof(string));
+    table.Columns.Add(ColumnName.PRESTADOR_EXEC_NOME, typeof(string));
+    table.Columns.Add(ColumnName.ESPECIALIDADE_EXEC, typeof(string));
+    table.Columns.Add(ColumnName.VL_PAGTO_PRESTADOR, typeof(string));
+    table.Columns.Add(ColumnName.GUIA_PRINCIPAL, typeof(string));
+    table.Columns.Add(ColumnName.VERSAO_TABELA, typeof(int?));
+    table.Columns.Add(ColumnName.PARTICIPACAO_EXEC, typeof(int?));
+    table.Columns.Add(ColumnName.INDICE_APLICADO, typeof(string));
+    table.Columns.Add(ColumnName.ULTIMA_MENSALIDADE, typeof(decimal?));
+    table.Columns.Add(ColumnName.GLOSA, typeof(decimal?));
+    table.Columns.Add(ColumnName.PAGTO_COMPLEMENTAR, typeof(decimal?));
+    table.Columns.Add(ColumnName.UD_BASE, typeof(int?));
+    table.Columns.Add(ColumnName.REDE, typeof(string));
+    table.Columns.Add(ColumnName.FATURA, typeof(string));
+    table.Columns.Add(ColumnName.VL_FAT_PTU_A500, typeof(decimal?));
+    table.Columns.Add(ColumnName.TIPO_ITEM, typeof(int?));
+    table.Columns.Add(ColumnName.DT_EXECUCAO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.TIPO_PRESTADOR, typeof(int?));
+    table.Columns.Add(ColumnName.DEMOSTRATIVO_PAGTO, typeof(string));
+    table.Columns.Add(ColumnName.LOCAL_ATEND, typeof(string));
+    table.Columns.Add(ColumnName.COMPARTILHAMENTO, typeof(string));
+    table.Columns.Add(ColumnName.TIPO_COMPARTILHAMENTO, typeof(string));
+    table.Columns.Add(ColumnName.REMIDO, typeof(string));
+    table.Columns.Add(ColumnName.SEQUENCIA_ITEM, typeof(string));
+    table.Columns.Add(ColumnName.CARATER_ATEND, typeof(string));
+    table.Columns.Add(ColumnName.TIPO_DIRECIONAMENTO, typeof(int?));
+    table.Columns.Add(ColumnName.FATOR_INTERNACAO_APTO_PAGTO, typeof(int?));
+    table.Columns.Add(ColumnName.FATOR_VIA_DE_ACESSO_PAGTO, typeof(int?));
+    table.Columns.Add(ColumnName.FATOR_EMERGENCIA_PAGTO, typeof(int?));
+    table.Columns.Add(ColumnName.TX_INTERCAMBIO_CUSTO, typeof(decimal?));
+    table.Columns.Add(ColumnName.MOTIVO_DA_ALTA, typeof(int?));
+    table.Columns.Add(ColumnName.FLG_AJIUS, typeof(string));
+    table.Columns.Add(ColumnName.LOCAL_ATEND_NOME, typeof(string));
+    table.Columns.Add(ColumnName.LOCAL_ATEND_CIDADE, typeof(string));
+    table.Columns.Add(ColumnName.PRESTADOR_SOLIC_NOME, typeof(string));
+    table.Columns.Add(ColumnName.PRESTADOR_SOLIC, typeof(string));
+    table.Columns.Add(ColumnName.COBERTURA_ADICIONAL, typeof(string));
+    table.Columns.Add(ColumnName.GRUPO_ECONOMICO, typeof(string));
+    table.Columns.Add(ColumnName.TIPO_COPARTICIPACAO, typeof(string));
+    table.Columns.Add(ColumnName.COD_PLANTA, typeof(string));
+    table.Columns.Add(ColumnName.EXPOSTO, typeof(string));
+
+    return table;
 }
 
 string ObterTempo(Stopwatch stopWatch)
@@ -62,6 +385,7 @@ List<RdcModel> ReadLines()
         models.Add(model);
 
         lineNumber++;
+        if (lineNumber == 100000) break;
     }
 
     return models;
