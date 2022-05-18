@@ -282,32 +282,32 @@ public static class DataMapper
         }
     }
 
-    static DateTime? ParseDate(string field)
+    static DateTime ParseDate(string field)
     {
         return DateTime.TryParseExact(field, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var result)
             ? result :
-            null;
+            default;
     }
 
-    static int? ParseInt(string field)
+    static int ParseInt(string field)
     {
         return int.TryParse(field, out var result)
             ? result :
-            null;
+            default;
     }
 
-    static long? ParseLong(string field)
+    static long ParseLong(string field)
     {
         return long.TryParse(field, out var result)
             ? result :
-            null;
+            default;
     }
 
-    static decimal? ParseDecimal(string field)
+    static decimal ParseDecimal(string field)
     {
         return decimal.TryParse(field, out var result)
             ? result :
-            null;
+            default;
     }
 
 }

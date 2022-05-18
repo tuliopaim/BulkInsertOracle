@@ -4,7 +4,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Text;
 
-const string cnnStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=SYSTEM;Password=senhaS3creta;";
+const string cnnStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=localhost)(PORT=1521))(CONNECT_DATA=(SERVICE_NAME=xe)));User Id=TESTE;Password=senhaS3creta;";
 
 var basePath = @"C:\src\BulkInsertOracle\BulkInsertOracle\Inputs";
 var arqBaseFileName = "ARQ_BASE_RDC28_025_202112.txt";
@@ -22,6 +22,7 @@ try
 
     stopWatch.Start();
     //await InsertLines(models, stopWatch);
+
     InserirBulkCopy(models);
 
     Console.WriteLine(ObterTempo(stopWatch));
@@ -35,6 +36,7 @@ catch (Exception ex)
 void InserirBulkCopy(List<RdcModel> models)
 {
     using var copy = new OracleBulkCopy(cnnStr);
+    copy.BulkCopyTimeout = 0;
     using var table = ToDataTable(models);
 
     copy.DestinationTableName = "\"RDC\"";
@@ -127,7 +129,7 @@ void InserirBulkCopy(List<RdcModel> models)
     copy.ColumnMappings.Add(ColumnName.LOCAL_ATEND_NOME, ColumnName.LOCAL_ATEND_NOME);
     copy.ColumnMappings.Add(ColumnName.LOCAL_ATEND_CIDADE, ColumnName.LOCAL_ATEND_CIDADE);
     copy.ColumnMappings.Add(ColumnName.PRESTADOR_SOLIC_NOME, ColumnName.PRESTADOR_SOLIC_NOME);
-    copy.ColumnMappings.Add(ColumnName.PRESTADOR_SOLIC, ColumnName.PRESTADOR_SOLIC);
+    copy.ColumnMappings.Add(ColumnName.PRESTADOR_EXEC_CIDADE, ColumnName.PRESTADOR_EXEC_CIDADE);
     copy.ColumnMappings.Add(ColumnName.COBERTURA_ADICIONAL, ColumnName.COBERTURA_ADICIONAL);
     copy.ColumnMappings.Add(ColumnName.GRUPO_ECONOMICO, ColumnName.GRUPO_ECONOMICO);
     copy.ColumnMappings.Add(ColumnName.TIPO_COPARTICIPACAO, ColumnName.TIPO_COPARTICIPACAO);
@@ -239,7 +241,7 @@ DataTable ToDataTable(List<RdcModel> models)
         row[ColumnName.LOCAL_ATEND_NOME] = model.LOCAL_ATENDIMENTO_NOME;
         row[ColumnName.LOCAL_ATEND_CIDADE] = model.LOCAL_ATENDIMENTO_CIDADE;
         row[ColumnName.PRESTADOR_SOLIC_NOME] = model.PRESTADOR_SOLICITANTE_NOME;
-        row[ColumnName.PRESTADOR_SOLIC] = model.PRESTADOR_SOLICITANTE;
+        row[ColumnName.PRESTADOR_EXEC_CIDADE] = model.PRESTADOR_EXECUTANTE_CIDADE;
         row[ColumnName.COBERTURA_ADICIONAL] = model.COBERTURA_ADICIONAL;
         row[ColumnName.GRUPO_ECONOMICO] = model.GRUPO_ECONOMICO;
         row[ColumnName.TIPO_COPARTICIPACAO] = model.TIPO_COPARTICIPACAO;
@@ -259,73 +261,73 @@ static DataTable CreateTable<T>()
     table.Columns.Add(ColumnName.SEQ_LINHA_ARQUIVO, typeof(int));
     table.Columns.Add(ColumnName.COMPETENCIA, typeof(string));
     table.Columns.Add(ColumnName.UD_ORIGEM, typeof(int));
-    table.Columns.Add(ColumnName.INICIO_APURACAO, typeof(DateTime?));
-    table.Columns.Add(ColumnName.FIM_APURACAO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.INICIO_APURACAO, typeof(DateTime));
+    table.Columns.Add(ColumnName.FIM_APURACAO, typeof(DateTime));
     table.Columns.Add(ColumnName.COD_BENEFICIARIO, typeof(string));
-    table.Columns.Add(ColumnName.DT_NASCIMENTO, typeof(DateTime?));
-    table.Columns.Add(ColumnName.DT_INCLUSAO, typeof(DateTime?));
-    table.Columns.Add(ColumnName.DT_EXCLUSAO, typeof(DateTime?));
-    table.Columns.Add(ColumnName.CONTRATACAO, typeof(int?));
-    table.Columns.Add(ColumnName.SEGMENTACAO, typeof(int?));
-    table.Columns.Add(ColumnName.ABRANGENCIA, typeof(int?));
-    table.Columns.Add(ColumnName.ACOMODACAO, typeof(int?));
+    table.Columns.Add(ColumnName.DT_NASCIMENTO, typeof(DateTime));
+    table.Columns.Add(ColumnName.DT_INCLUSAO, typeof(DateTime));
+    table.Columns.Add(ColumnName.DT_EXCLUSAO, typeof(DateTime));
+    table.Columns.Add(ColumnName.CONTRATACAO, typeof(int));
+    table.Columns.Add(ColumnName.SEGMENTACAO, typeof(int));
+    table.Columns.Add(ColumnName.ABRANGENCIA, typeof(int));
+    table.Columns.Add(ColumnName.ACOMODACAO, typeof(int));
     table.Columns.Add(ColumnName.NOME_PLANO, typeof(string));
     table.Columns.Add(ColumnName.REGISTRO_ANS, typeof(string));
-    table.Columns.Add(ColumnName.COPART_AMB, typeof(int?));
-    table.Columns.Add(ColumnName.COPART_INTER, typeof(int?));
-    table.Columns.Add(ColumnName.COD_PROCED, typeof(long?));
+    table.Columns.Add(ColumnName.COPART_AMB, typeof(int));
+    table.Columns.Add(ColumnName.COPART_INTER, typeof(int));
+    table.Columns.Add(ColumnName.COD_PROCED, typeof(long));
     table.Columns.Add(ColumnName.GUIA, typeof(string));
     table.Columns.Add(ColumnName.DESC_PROCED, typeof(string));
-    table.Columns.Add(ColumnName.QTD_PROCED, typeof(long?));
-    table.Columns.Add(ColumnName.CUSTO, typeof(decimal?));
-    table.Columns.Add(ColumnName.RECUP_CUSTO, typeof(decimal?));
-    table.Columns.Add(ColumnName.DT_OCORRENCIA, typeof(DateTime?));
-    table.Columns.Add(ColumnName.DT_INTERNACAO, typeof(DateTime?));
-    table.Columns.Add(ColumnName.DT_ALTA, typeof(DateTime?));
+    table.Columns.Add(ColumnName.QTD_PROCED, typeof(long));
+    table.Columns.Add(ColumnName.CUSTO, typeof(decimal));
+    table.Columns.Add(ColumnName.RECUP_CUSTO, typeof(decimal));
+    table.Columns.Add(ColumnName.DT_OCORRENCIA, typeof(DateTime));
+    table.Columns.Add(ColumnName.DT_INTERNACAO, typeof(DateTime));
+    table.Columns.Add(ColumnName.DT_ALTA, typeof(DateTime));
     table.Columns.Add(ColumnName.COD_CID, typeof(string));
     table.Columns.Add(ColumnName.DESC_CID, typeof(string));
-    table.Columns.Add(ColumnName.TIPO_INTERNACAO, typeof(int?));
+    table.Columns.Add(ColumnName.TIPO_INTERNACAO, typeof(int));
     table.Columns.Add(ColumnName.PRESTADOR, typeof(string));
     table.Columns.Add(ColumnName.NOME_BENEFICIARIO, typeof(string));
     table.Columns.Add(ColumnName.SEXO, typeof(string));
     table.Columns.Add(ColumnName.MUNICIPIO_RESIDENCIA, typeof(string));
     table.Columns.Add(ColumnName.UF_RESIDENCIA, typeof(string));
-    table.Columns.Add(ColumnName.UD_EXECUTORA, typeof(int?));
+    table.Columns.Add(ColumnName.UD_EXECUTORA, typeof(int));
     table.Columns.Add(ColumnName.ADMINISTRADORA_BENEF, typeof(string));
     table.Columns.Add(ColumnName.CONTR_COMERCIALIZACAO, typeof(string));
     table.Columns.Add(ColumnName.COD_CONTRATO, typeof(string));
-    table.Columns.Add(ColumnName.DT_INCLUSAO_CONTRATO, typeof(DateTime?));
-    table.Columns.Add(ColumnName.DT_EXCLUSAO_CONTRATO, typeof(DateTime?));
+    table.Columns.Add(ColumnName.DT_INCLUSAO_CONTRATO, typeof(DateTime));
+    table.Columns.Add(ColumnName.DT_EXCLUSAO_CONTRATO, typeof(DateTime));
     table.Columns.Add(ColumnName.CNPJ, typeof(string));
     table.Columns.Add(ColumnName.NOME_EMPRESA, typeof(string));
-    table.Columns.Add(ColumnName.MES_REAJUSTE, typeof(int?));
+    table.Columns.Add(ColumnName.MES_REAJUSTE, typeof(int));
     table.Columns.Add(ColumnName.EXCLUSIVO_EX_EMPREG, typeof(string));
-    table.Columns.Add(ColumnName.TIPO_REAJUSTE, typeof(int?));
+    table.Columns.Add(ColumnName.TIPO_REAJUSTE, typeof(int));
     table.Columns.Add(ColumnName.REGULAMENTADO, typeof(string));
     table.Columns.Add(ColumnName.MODALIDADE, typeof(string));
-    table.Columns.Add(ColumnName.RECEITA, typeof(decimal?));
+    table.Columns.Add(ColumnName.RECEITA, typeof(decimal));
     table.Columns.Add(ColumnName.TAXA_ADM_SERV, typeof(string));
     table.Columns.Add(ColumnName.CPF, typeof(string));
-    table.Columns.Add(ColumnName.VINCULO, typeof(int?));
+    table.Columns.Add(ColumnName.VINCULO, typeof(int));
     table.Columns.Add(ColumnName.PRESTADOR_SOLIC, typeof(string));
     table.Columns.Add(ColumnName.ESPECIALIDADE_SOLIC, typeof(string));
     table.Columns.Add(ColumnName.PRESTADOR_EXEC_NOME, typeof(string));
     table.Columns.Add(ColumnName.ESPECIALIDADE_EXEC, typeof(string));
     table.Columns.Add(ColumnName.VL_PAGTO_PRESTADOR, typeof(string));
     table.Columns.Add(ColumnName.GUIA_PRINCIPAL, typeof(string));
-    table.Columns.Add(ColumnName.VERSAO_TABELA, typeof(int?));
-    table.Columns.Add(ColumnName.PARTICIPACAO_EXEC, typeof(int?));
+    table.Columns.Add(ColumnName.VERSAO_TABELA, typeof(int));
+    table.Columns.Add(ColumnName.PARTICIPACAO_EXEC, typeof(int));
     table.Columns.Add(ColumnName.INDICE_APLICADO, typeof(string));
-    table.Columns.Add(ColumnName.ULTIMA_MENSALIDADE, typeof(decimal?));
-    table.Columns.Add(ColumnName.GLOSA, typeof(decimal?));
-    table.Columns.Add(ColumnName.PAGTO_COMPLEMENTAR, typeof(decimal?));
-    table.Columns.Add(ColumnName.UD_BASE, typeof(int?));
+    table.Columns.Add(ColumnName.ULTIMA_MENSALIDADE, typeof(decimal));
+    table.Columns.Add(ColumnName.GLOSA, typeof(decimal));
+    table.Columns.Add(ColumnName.PAGTO_COMPLEMENTAR, typeof(decimal));
+    table.Columns.Add(ColumnName.UD_BASE, typeof(int));
     table.Columns.Add(ColumnName.REDE, typeof(string));
     table.Columns.Add(ColumnName.FATURA, typeof(string));
-    table.Columns.Add(ColumnName.VL_FAT_PTU_A500, typeof(decimal?));
-    table.Columns.Add(ColumnName.TIPO_ITEM, typeof(int?));
-    table.Columns.Add(ColumnName.DT_EXECUCAO, typeof(DateTime?));
-    table.Columns.Add(ColumnName.TIPO_PRESTADOR, typeof(int?));
+    table.Columns.Add(ColumnName.VL_FAT_PTU_A500, typeof(decimal));
+    table.Columns.Add(ColumnName.TIPO_ITEM, typeof(int));
+    table.Columns.Add(ColumnName.DT_EXECUCAO, typeof(DateTime));
+    table.Columns.Add(ColumnName.TIPO_PRESTADOR, typeof(int));
     table.Columns.Add(ColumnName.DEMOSTRATIVO_PAGTO, typeof(string));
     table.Columns.Add(ColumnName.LOCAL_ATEND, typeof(string));
     table.Columns.Add(ColumnName.COMPARTILHAMENTO, typeof(string));
@@ -333,17 +335,17 @@ static DataTable CreateTable<T>()
     table.Columns.Add(ColumnName.REMIDO, typeof(string));
     table.Columns.Add(ColumnName.SEQUENCIA_ITEM, typeof(string));
     table.Columns.Add(ColumnName.CARATER_ATEND, typeof(string));
-    table.Columns.Add(ColumnName.TIPO_DIRECIONAMENTO, typeof(int?));
-    table.Columns.Add(ColumnName.FATOR_INTERNACAO_APTO_PAGTO, typeof(int?));
-    table.Columns.Add(ColumnName.FATOR_VIA_DE_ACESSO_PAGTO, typeof(int?));
-    table.Columns.Add(ColumnName.FATOR_EMERGENCIA_PAGTO, typeof(int?));
-    table.Columns.Add(ColumnName.TX_INTERCAMBIO_CUSTO, typeof(decimal?));
-    table.Columns.Add(ColumnName.MOTIVO_DA_ALTA, typeof(int?));
+    table.Columns.Add(ColumnName.TIPO_DIRECIONAMENTO, typeof(int));
+    table.Columns.Add(ColumnName.FATOR_INTERNACAO_APTO_PAGTO, typeof(int));
+    table.Columns.Add(ColumnName.FATOR_VIA_DE_ACESSO_PAGTO, typeof(int));
+    table.Columns.Add(ColumnName.FATOR_EMERGENCIA_PAGTO, typeof(int));
+    table.Columns.Add(ColumnName.TX_INTERCAMBIO_CUSTO, typeof(decimal));
+    table.Columns.Add(ColumnName.MOTIVO_DA_ALTA, typeof(int));
     table.Columns.Add(ColumnName.FLG_AJIUS, typeof(string));
     table.Columns.Add(ColumnName.LOCAL_ATEND_NOME, typeof(string));
     table.Columns.Add(ColumnName.LOCAL_ATEND_CIDADE, typeof(string));
     table.Columns.Add(ColumnName.PRESTADOR_SOLIC_NOME, typeof(string));
-    table.Columns.Add(ColumnName.PRESTADOR_SOLIC, typeof(string));
+    table.Columns.Add(ColumnName.PRESTADOR_EXEC_CIDADE, typeof(string));
     table.Columns.Add(ColumnName.COBERTURA_ADICIONAL, typeof(string));
     table.Columns.Add(ColumnName.GRUPO_ECONOMICO, typeof(string));
     table.Columns.Add(ColumnName.TIPO_COPARTICIPACAO, typeof(string));
@@ -379,13 +381,14 @@ List<RdcModel> ReadLines()
         }
 
         model.SEQ_LINHA_ARQUIVO = lineNumber;
-        model.COMPETENCIA = model.INICIO_APURACAO?.ToString("yyyyMM");
+        model.COMPETENCIA = model.INICIO_APURACAO.ToString("yyyyMM");
         model.UNIMED_ORIGEM = int.Parse(model.CODIGO_BENEFICIARIO[1..4]);
 
         models.Add(model);
 
         lineNumber++;
-        if (lineNumber == 100000) break;
+
+        if (lineNumber == 10000) break;
     }
 
     return models;
