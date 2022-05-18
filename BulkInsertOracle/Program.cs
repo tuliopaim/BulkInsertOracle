@@ -1,5 +1,6 @@
 ﻿using BulkInsertOracle;
 using Oracle.ManagedDataAccess.Client;
+using System.Data;
 using System.Diagnostics;
 using System.Text;
 
@@ -8,18 +9,18 @@ const string cnnStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=loc
 var basePath = @"C:\src\BulkInsertOracle\BulkInsertOracle\Inputs";
 var arqBaseFileName = "ARQ_BASE_RDC28_025_202112.txt";
 var arqBaseFilePath = Path.Combine(basePath!, arqBaseFileName);
-var batchSize = 10;
+var batchSize = 1000;
 
 try
 {
     Console.WriteLine($"Starting... batchSize: {batchSize}");
     var stopWatch = new Stopwatch();
-    stopWatch.Start();
-
+    
     var models = ReadLines();
 
     Console.WriteLine($"{models.Count} linhas, inserindo... {ObterTempo(stopWatch)}");
 
+    stopWatch.Start();
     await InsertLines(models, stopWatch);
 
     Console.ReadLine();
@@ -68,19 +69,24 @@ List<RdcModel> ReadLines()
 
 async Task InsertLines(List<RdcModel> models, Stopwatch stopWatch)
 {
-    var queryInsertInto = GenerateQuerynInsertInto();
-
     await using var connection = new OracleConnection(cnnStr);
     connection.Open();
 
-    var chunkNumber = 0;
+    var contador = 0;
 
-    foreach(var chunk in models.Chunk(batchSize))
+    foreach (var chunk in models.Chunk(batchSize))
     {
-        await BulkInsert(connection, chunk, queryInsertInto);
+        var transaction = connection.BeginTransaction(IsolationLevel.ReadCommitted);
+        foreach(var model in chunk)
+        {
+            var queryInsertInto = GenerateQuerynInsertInto();
+            await BulkInsert(connection, transaction, model, queryInsertInto);
 
-        if(++chunkNumber % 500 == 0) 
-            Console.WriteLine(chunkNumber * batchSize + " inseridos! " + ObterTempo(stopWatch));
+            if (++contador % 10000 == 0) 
+                Console.WriteLine(contador + " inseridos! " + ObterTempo(stopWatch));
+        }
+            
+        transaction.Commit();
     }
 }
 
@@ -88,7 +94,7 @@ static string GenerateQuerynInsertInto()
 {
     var builder = new StringBuilder();
 
-    builder.Append("INTO \"C##teste\".RDC (");
+    builder.Append("INSERT INTO \"TESTE\".RDC (");
     var totalColunas = ColumnName.Todos().Count();
     var columnCount = 0;
     foreach (var columnName in ColumnName.Todos())
@@ -101,15 +107,17 @@ static string GenerateQuerynInsertInto()
     return builder.ToString();
 }
 
-static async Task BulkInsert(OracleConnection connection, RdcModel[] modelsBuffer, string queryInsertInto)
+static async Task BulkInsert(OracleConnection connection, OracleTransaction transaction, RdcModel model, string queryInsertInto)
 {
     await using var command = connection.CreateCommand();
 
-    var query = GenerateQuery(modelsBuffer.Count(), queryInsertInto);
+    command.Transaction = transaction;
+
+    var query = GenerateQuery(1, queryInsertInto);
 
     command.CommandText = query;
 
-    FillParameters(command, modelsBuffer);
+    FillParameters(command, model);
 
     await command.ExecuteNonQueryAsync();
 
@@ -119,8 +127,6 @@ static async Task BulkInsert(OracleConnection connection, RdcModel[] modelsBuffe
 static string GenerateQuery(int modelCount, string queryInsertInto)
 {
     var builder = new StringBuilder();
-
-    builder.AppendLine("INSERT ALL");
 
     for (int modelIndex = 0; modelIndex < modelCount; modelIndex++)
     {
@@ -139,18 +145,15 @@ static string GenerateQuery(int modelCount, string queryInsertInto)
         builder.Append(')');
     }
 
-    builder.AppendLine("SELECT 1 FROM DUAL");
-
     return builder.ToString();
 }
 
-static void FillParameters(OracleCommand command, RdcModel[] models)
+static void FillParameters(OracleCommand command, RdcModel model)
 {
     command.Parameters.Clear();
 
-    for (var i = 0; i < models.Count(); i++)
+    for (var i = 0; i < 1; i++)
     {
-        var model = models[i];
         command.Parameters.Add("ABRANGENCIA" + i, model.ABRANGENCIA);
         command.Parameters.Add("ACOMODACAO" + i, model.ACOMODACAO);
         command.Parameters.Add("ADMINISTRADORA_BENEF" + i, model.ADMINISTRADORA_BENEF);
