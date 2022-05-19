@@ -9,7 +9,7 @@ const string cnnStr = "Data Source=(DESCRIPTION=(ADDRESS=(PROTOCOL=TCP)(HOST=loc
 var basePath = @"C:\src\BulkInsertOracle\BulkInsertOracle\Inputs";
 var arqBaseFileName = "ARQ_BASE_RDC28_025_202112.txt";
 var arqBaseFilePath = Path.Combine(basePath!, arqBaseFileName);
-var batchSize = 1000;
+var batchSize = 10000;
 
 try
 {

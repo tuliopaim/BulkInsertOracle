@@ -37,7 +37,21 @@ public class RdcModel
     public string NOME_BENEFICIARIO { get; set; }
     public string SEXO { get; set; }
     public string MUNICIPIO_RESIDENCIA { get; set; }
-    public string UF_RESIDENCIA { get; set; }
+
+    private string _uf_residencia { get; set; }
+    public string UF_RESIDENCIA
+    {
+        get
+        {
+            return _uf_residencia;
+        }
+
+        set
+        {
+            if (value is null || value.Length <= 3) return;
+            _uf_residencia = value.Substring(0, 2);
+        }
+    }
     public int? UD_EXECUTORA { get; set; }
     public string ADMINISTRADORA_BENEF { get; set; }
     public string CONTR_COMERCIALIZACAO { get; set; }
